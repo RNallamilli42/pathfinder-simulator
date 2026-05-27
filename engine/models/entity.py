@@ -138,15 +138,15 @@ class MovementSpeeds(BaseModel):
 class Entity(BaseModel):
     """Blueprint for a being in PF2e"""
     model_config = ConfigDict(validate_assignment=True)
-    name : str
+    name : str | None = None
     level : int = Field(0, ge = 0, le = 20)
-    size : Size
+    size : Size = Size.MEDIUM
     ability_scores : AbilityScores = AbilityScores()
     saves : Saves = Saves()
     skills : Skills = Skills()
     movement : MovementSpeeds = MovementSpeeds()
-    current_hp : int = 0
-    max_hp : int = 0
+    current_hp : int = Field(0, ge = 0)
+    max_hp : int = Field(0, ge = 0)
     ac: int = 0
     perception : TotalModifier = TotalModifier(ability = "wisdom")
     conditions : dict[Conditions, int | None] = Field(default_factory = dict)
@@ -155,9 +155,7 @@ class Entity(BaseModel):
     actions : int = Field(3, ge = 0)
     reactions : int = Field(1, ge = 0)
 
-    @model_validator(mode="after")
-    def set_derived_stats(self) -> Self:
-        """Function to set stats such as ac after Entity is created (may move to specific inherited classes)"""
-        self.ac = 10 + self.ability_scores.dexterity
-        return self
+    def model_post_init(self, __context: any) -> None:
+        """Set derived stats after model initialization"""
+        self.__dict__['ac'] = 10 + self.ability_scores.dexterity
     
