@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum 
 from typing import Self
 
@@ -125,6 +125,9 @@ class Saves(BaseModel):
     fortitude : TotalModifier = TotalModifier(ability = "constitution")
     reflex : TotalModifier = TotalModifier(ability = "dexterity")
     will : TotalModifier = TotalModifier(ability = "wisdom")
+
+class Armors(BaseModel):
+    
 
 class MovementSpeeds(BaseModel):
     """Represents an entity's different movement speeds"""
